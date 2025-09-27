@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Dashboard de Produção";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/dashboard.css">
+</head>
+
+<body>
+    <header class="dashboard-header">
+        <h1>Nome da Sua Empresa</h1>
+        <div id="relogio" class="relogio"></div>
+    </header>
+
+    <main class="container-fluid mt-4">
+        <h2>Quadros em Produção</h2>
+        <div id="quadros-container" class="row">
+        </div>
+    </main>
+
+    <script src="~/js/dashboard.js"></script>
+</body>
+</html>

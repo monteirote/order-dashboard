@@ -17,16 +17,16 @@ namespace OrderDashboard.ViewModels
         public string? ImageUrl { get; set; } 
 
         [Display(Name = "Tipo de Papel")]
-        public int PaperId { get; set; }
+        public int? PaperId { get; set; }
 
         [Display(Name = "Tipo de Vidro")]
-        public int GlassTypeId { get; set; }
+        public int? GlassTypeId { get; set; }
 
         [Display(Name = "Tipo de Moldura")]
-        public int FrameId { get; set; }
+        public int? FrameId { get; set; }
 
         [Display(Name = "Tipo de Fundo")]
-        public int BackingId { get; set; }
+        public int? BackingId { get; set; }
 
         public IEnumerable<SelectListItem>? PaperOptions { get; set; }
         public IEnumerable<SelectListItem>? GlassTypeOptions { get; set; }

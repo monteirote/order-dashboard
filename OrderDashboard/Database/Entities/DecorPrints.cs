@@ -12,10 +12,10 @@ namespace OrderDashboard.Database.Entities
         public int Width { get; set; }
         public string? ImageUrl { get; set; }
 
-        public int PaperId { get; set; }
-        public int GlassTypeId { get; set; }
-        public int FrameId { get; set; }
-        public int BackingId { get; set; }
+        public int? PaperId { get; set; }
+        public int? GlassTypeId { get; set; }
+        public int? FrameId { get; set; }
+        public int? BackingId { get; set; }
 
 
         [ForeignKey("PaperId")]

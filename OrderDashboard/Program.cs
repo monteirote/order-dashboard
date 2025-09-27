@@ -1,11 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using OrderDashboard.Database;
+using OrderDashboard.Repositories;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IOptionsRepository, OptionsRepository>();
+builder.Services.AddScoped<IDecorPrintsRepository, DecorPrintsRepository>();
+
+
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 

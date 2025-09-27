@@ -1,0 +1,93 @@
+﻿@using OrderDashboard.ViewModels
+@model DecorPrintsViewModel
+
+
+<h2>@ViewData["Title"]</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="AddDecorPrint" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Height" class="control-label"></label>
+                <input asp-for="Height" class="form-control" type="number" min="1" />
+                <span asp-validation-for="Height" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Width" class="control-label"></label>
+                <input asp-for="Width" class="form-control" type="number" min="1" />
+                <span asp-validation-for="Width" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ImageUrl" class="control-label"></label>
+                <input asp-for="ImageUrl" class="form-control" />
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+            </div>
+
+            <br />
+            <h4>Opções de Montagem</h4>
+
+            <div class="form-group">
+                <label asp-for="GlassTypeId" class="control-label"></label>
+                <select asp-for="GlassTypeId" class="form-control select2-filter" asp-items="Model.GlassTypeOptions">
+                    <option value="">Selecione o Tipo de Vidro...</option>
+                </select>
+                <span asp-validation-for="GlassTypeId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="PaperId" class="control-label"></label>
+                <select asp-for="PaperId" class="form-control select2-filter" asp-items="Model.PaperOptions">
+                    <option value="">Selecione o Tipo de Papel...</option>
+                </select>
+                <span asp-validation-for="PaperId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="FrameId" class="control-label"></label>
+                <select asp-for="FrameId" class="form-control select2-filter" asp-items="Model.FrameOptions">
+                    <option value="">Selecione o Tipo de Moldura...</option>
+                </select>
+                <span asp-validation-for="FrameId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="BackingId" class="control-label"></label>
+                <select asp-for="BackingId" class="form-control select2-filter" asp-items="Model.BackingOptions">
+                    <option value="">Selecione o Tipo de Fundo...</option>
+                </select>
+                <span asp-validation-for="BackingId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i> Salvar Quadro
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-list"></i> Voltar para a Lista
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Inicializa o Select2 em todos os elementos com a classe 'select2-filter'
+            $('.select2-filter').select2({
+                placeholder: "Digite para buscar a opção...",
+                allowClear: true, // Permite que o usuário desfaça a seleção
+                width: '100%' // Garante que o select ocupe a largura total do container
+            });
+        });
+    </script>
+}

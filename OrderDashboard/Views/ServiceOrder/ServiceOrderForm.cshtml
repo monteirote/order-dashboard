@@ -1,0 +1,179 @@
+﻿@using OrderDashboard.ViewModels
+@model ServiceOrderViewModel
+
+@{
+    ViewData["Title"] = "Nova Ordem de Serviço";
+}
+
+<h2>@ViewData["Title"]</h2>
+<hr />
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <h4>Dados da Ordem de Serviço</h4>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="OSNumber" class="control-label"></label>
+                <input asp-for="OSNumber" class="form-control" />
+                <span asp-validation-for="OSNumber" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="CustomerName" class="control-label"></label>
+                <input asp-for="CustomerName" class="form-control" />
+                <span asp-validation-for="CustomerName" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="DueDate" class="control-label"></label>
+                <input asp-for="DueDate" class="form-control" type="datetime-local" />
+                <span asp-validation-for="DueDate" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <h4>Quadros</h4>
+    <div id="quadrosContainer">
+    </div>
+
+    <div class="form-group mt-3">
+        <button type="button" id="addQuadroBtn" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Adicionar Quadro
+        </button>
+    </div>
+
+    <hr />
+
+    <div class="form-group mt-3">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save"></i> Salvar Ordem de Serviço
+        </button>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-list"></i> Voltar para a Lista
+        </a>
+    </div>
+</form>
+
+<div id="quadroTemplate" style="display: none;">
+    <div class="quadro-item card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <strong>Quadro #<span class="quadro-index"></span></strong>
+            <button type="button" class="btn btn-danger btn-sm remove-quadro-btn">
+                <i class="bi bi-trash"></i> Remover
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Altura (cm)</label>
+                                <input name="DecorPrints[__INDEX__].Height" class="form-control" type="number" min="1" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Largura (cm)</label>
+                                <input name="DecorPrints[__INDEX__].Width" class="form-control" type="number" min="1" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Tipo de Vidro</label>
+                        <select name="DecorPrints[__INDEX__].GlassTypeId" class="form-control select2-filter" asp-items="@Model.GlassTypeOptions">
+                            <option value="">Selecione o Tipo de Vidro...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Tipo de Moldura</label>
+                        <select name="DecorPrints[__INDEX__].FrameId" class="form-control select2-filter" asp-items="@Model.FrameOptions">
+                            <option value="">Selecione o Tipo de Moldura...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Descrição</label>
+                        <textarea name="DecorPrints[__INDEX__].Description" class="form-control" rows="3"></textarea>
+                    </div>
+
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Imagem</label>
+                        <input name="DecorPrints[__INDEX__].ImageFile" type="file" class="form-control image-upload-input" accept="image/*" />
+                    </div>
+                    <div class="mt-2 text-center">
+                        <img src="https://via.placeholder.com/150" class="img-thumbnail image-preview" style="max-width: 150px; max-height: 150px;" alt="Preview da imagem" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            function initializeSelect2(context) {
+                $('.select2-filter', context).select2({
+                    placeholder: "Digite para buscar a opção...",
+                    allowClear: true,
+                    width: '100%'
+                });
+            }
+
+            // Adicionar Quadro
+            $("#addQuadroBtn").click(function () {
+                var index = $("#quadrosContainer .quadro-item").length;
+                var template = $("#quadroTemplate").html().replace(/__INDEX__/g, index);
+
+                var newQuadro = $(template);
+                newQuadro.find('.quadro-index').text(index + 1);
+
+                $("#quadrosContainer").append(newQuadro);
+
+                // Inicializa o select2 para o novo quadro adicionado
+                initializeSelect2(newQuadro);
+            });
+
+            $("#quadrosContainer").on("click", ".remove-quadro-btn", function () {
+                $(this).closest(".quadro-item").remove();
+
+                $("#quadrosContainer .quadro-item").each(function(i) {
+                    $(this).find('[name^="DecorPrints"]').each(function() {
+                        var oldName = $(this).attr('name');
+                        var newName = oldName.replace(/\[\d+\]/, '[' + i + ']');
+                        $(this).attr('name', newName);
+                    });
+                    $(this).find('.quadro-index').text(i + 1);
+                });
+            });
+
+             $("#quadrosContainer").on("change", ".image-upload-input", function () {
+                var preview = $(this).closest('.quadro-item').find('.image-preview');
+                if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        preview.attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                } else {
+                     preview.attr('src', 'https://via.placeholder.com/150');
+                }
+            });
+        });
+    </script>
+}

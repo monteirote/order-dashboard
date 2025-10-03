@@ -13,24 +13,16 @@ namespace OrderDashboard.ViewModels
         [Display(Name = "Largura (cm)")]
         public int Width { get; set; }
 
-        [Display(Name = "Link da Imagem")]
-        public string? ImageUrl { get; set; } 
-
-        [Display(Name = "Tipo de Papel")]
-        public int? PaperId { get; set; }
-
         [Display(Name = "Tipo de Vidro")]
         public int? GlassTypeId { get; set; }
 
         [Display(Name = "Tipo de Moldura")]
         public int? FrameId { get; set; }
 
-        [Display(Name = "Tipo de Fundo")]
-        public int? BackingId { get; set; }
+        [Display(Name = "Imagem do Quadro")]
+        public IFormFile? ImageFile { get; set; }
 
-        public IEnumerable<SelectListItem>? PaperOptions { get; set; }
-        public IEnumerable<SelectListItem>? GlassTypeOptions { get; set; }
-        public IEnumerable<SelectListItem>? FrameOptions { get; set; }
-        public IEnumerable<SelectListItem>? BackingOptions { get; set; }
+        [Display(Name = "Observações")]
+        public string Description { get; set; } = string.Empty;
     }
 }

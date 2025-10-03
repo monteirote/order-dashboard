@@ -10,6 +10,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IOptionsRepository, OptionsRepository>();
 builder.Services.AddScoped<IDecorPrintsRepository, DecorPrintsRepository>();
+builder.Services.AddScoped<IServiceOrderRepository, ServiceOrderRepository>();
 
 
 

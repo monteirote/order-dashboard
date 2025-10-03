@@ -1,4 +1,4 @@
-namespace OrderDashboard.Models
+namespace OrderDashboard.ViewModels
 {
     public class ErrorViewModel
     {

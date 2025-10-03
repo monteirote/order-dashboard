@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderDashboard.Database;
+using OrderDashboard.Database.Entities;
 using OrderDashboard.DTOs;
 using OrderDashboard.ViewModels;
 using static System.Net.Mime.MediaTypeNames;
@@ -8,8 +9,8 @@ namespace OrderDashboard.Repositories
 {
     public interface IDecorPrintsRepository
     {
-        void AddDecorPrint (DecorPrintsViewModel viewModel);
-        List<DecorPrintDTO> GetAllDecorPrints();
+        void AddDecorPrint (DecorPrintDTO viewModel);
+        List<DecorPrintDetailsViewModel> GetAllDecorPrints ();
     }
 
     public class DecorPrintsRepository : IDecorPrintsRepository
@@ -21,37 +22,35 @@ namespace OrderDashboard.Repositories
             _context = context;
         }
 
-        public void AddDecorPrint (DecorPrintsViewModel viewModel)
+        public void AddDecorPrint (DecorPrintDTO viewModel)
         {
-            var decorPrint = new Database.Entities.DecorPrints
+            var decorPrint = new DecorPrints
             {
                 Height = viewModel.Height,
                 Width = viewModel.Width,
                 ImageUrl = viewModel.ImageUrl,
-                PaperId = viewModel.PaperId,
                 GlassTypeId = viewModel.GlassTypeId,
                 FrameId = viewModel.FrameId,
-                BackingId = viewModel.BackingId
+                Description = viewModel.Description,
+                ServiceOrderId = viewModel.ServiceOrderId
             };
 
             _context.DecorPrints.Add(decorPrint);
             _context.SaveChanges();
         }
 
-        public List<DecorPrintDTO> GetAllDecorPrints()
+        public List<DecorPrintDetailsViewModel> GetAllDecorPrints ()
         {
-            var itens = _context.DecorPrints.Include(d => d.Paper).Include(d => d.GlassType)
-                                            .Include(d => d.Frame).Include(d => d.Backing);
+            var itens = _context.DecorPrints.Include(d => d.GlassType).Include(d => d.Frame).ToList();
 
-            return itens.Select(d => new DecorPrintDTO {
-                Id = d.Id,
+            return itens.Select(d => new DecorPrintDetailsViewModel {
                 Height = d.Height,
                 Width = d.Width,
-                ImageUrl = "/images/foto-placeholder.jpg",
-                Paper = d.Paper != null ? d.Paper.Name : null,
-                GlassType = d.GlassType != null ? d.GlassType.Name : null,
-                Frame = d.Frame != null ? d.Frame.Name : null,
-                Backing = d.Backing != null ? d.Backing.Name : null
+                ImageUrl = d.ImageUrl,
+                GlassTypeName = d.GlassType?.Name,
+                FrameTypeName = d.Frame?.Name,
+                Description = d.Description
+
             }).ToList();
         }
     }

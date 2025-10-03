@@ -1,0 +1,48 @@
+﻿@model OrderDashboard.ViewModels.ServiceOrderDetailViewModel
+
+@{
+    ViewData["Title"] = $"Detalhes da OS: {Model.OSNumber}";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <h4>Dados da Ordem de Serviço</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Número da OS</dt>
+        <dd class="col-sm-10">@Model.OSNumber</dd>
+
+        <dt class="col-sm-2">Nome do Cliente</dt>
+        <dd class="col-sm-10">@Model.CustomerName</dd>
+
+        <dt class="col-sm-2">Data e Hora de Entrega</dt>
+        <dd class="col-sm-10">@Model.DueDate.ToString("dd/MM/yyyy 'às' HH:mm")</dd>
+    </dl>
+</div>
+<hr />
+
+<h4>Quadros Associados</h4>
+
+<div class="row">
+    @foreach (var decorPrint in Model.DecorPrints)
+    {
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <img src="~/images/@decorPrint.ImageUrl" class="card-img-top" alt="Imagem do Quadro" style="height: 250px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">Dimensões: @decorPrint.Width cm x @decorPrint.Height cm</h5>
+                    <p class="card-text"><strong>Descrição:</strong> @decorPrint.Description</p>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Vidro:</strong> @(decorPrint.GlassTypeName ?? "N/A")</li>
+                        <li class="list-group-item"><strong>Moldura:</strong> @(decorPrint.FrameTypeName ?? "N/A")</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-secondary">Voltar para a Lista</a>
+</div>

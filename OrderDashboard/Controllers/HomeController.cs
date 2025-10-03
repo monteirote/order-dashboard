@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using OrderDashboard.Models;
+using OrderDashboard.ViewModels;
 
 namespace OrderDashboard.Controllers
 {

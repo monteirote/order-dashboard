@@ -22,7 +22,7 @@ namespace OrderDashboard.Controllers
         [HttpGet]
         public IActionResult ObterQuadrosEmProducao()
         {
-            var quadros = _decorPrintsRepository.GetAllDecorPrints();
+            var quadros = _decorPrintsRepository.GetDashboardData();
             return Json(quadros);
         }
     }

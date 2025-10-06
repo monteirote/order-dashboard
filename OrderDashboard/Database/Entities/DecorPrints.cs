@@ -26,5 +26,7 @@ namespace OrderDashboard.Database.Entities
 
         [ForeignKey("FrameId")]
         public Frames? Frame { get; set; }
+
+        public virtual ServiceOrder ServiceOrder { get; set; }
     }
 }

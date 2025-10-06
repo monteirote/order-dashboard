@@ -23,6 +23,6 @@ namespace OrderDashboard.ViewModels
         public IFormFile? ImageFile { get; set; }
 
         [Display(Name = "Observações")]
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; } = string.Empty;
     }
 }

@@ -9,19 +9,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
-
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/css/dashboard.css">
 </head>
 
-<body>
-    <header class="dashboard-header">
-        <h1>Nome da Sua Empresa</h1>
-        <div id="relogio" class="relogio"></div>
+<body class="bg-dark text-white">
+    <header class="dashboard-header d-flex justify-content-between align-items-center p-3">
+        <h1>Dashboard de Produção</h1>
+        <div id="relogio" class="relogio h3"></div>
     </header>
 
     <main class="container-fluid mt-4">
-        <h2>Quadros em Produção</h2>
         <div id="quadros-container" class="row">
         </div>
     </main>

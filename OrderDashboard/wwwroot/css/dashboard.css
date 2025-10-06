@@ -43,3 +43,43 @@
 .card-body ul {
     padding-left: 20px;
 }
+
+#quadros-container {
+    transition: opacity 0.5s ease-in-out;
+}
+
+    #quadros-container.fade-out {
+        opacity: 0;
+    }
+
+.os-header {
+    background-color: rgba(255, 255, 255, 0.1); 
+    border-left: 5px solid #007bff;
+    color: white; 
+}
+
+    /* dashboard.css */
+
+    /* Aumenta o tamanho do cabeçalho da OS */
+    .os-header h3 {
+        font-size: 2.5rem; /* Tamanho bem maior para o número da OS */
+        font-weight: bold;
+    }
+
+    .os-header p {
+        font-size: 1.5rem; /* Aumenta a fonte do cliente e da entrega */
+    }
+
+/* Aumenta o tamanho do texto nos cards dos quadros */
+.card-title {
+    font-size: 1.75rem;
+    font-weight: bold;
+}
+
+.card-text {
+    font-size: 1.1rem;
+}
+
+.card small {
+    font-size: 1rem;
+}

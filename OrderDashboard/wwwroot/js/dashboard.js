@@ -56,7 +56,9 @@
             os.quadros.forEach(quadro => {
                 const quadroColClass = (numOSNestaPagina === 1) ? 'col-md-4' : 'col-md-6';
 
-                let imageURL = `/images/savedImages/${quadro.imageUrl}` || '/images/assets/sem-foto-adicionada.jpeg';
+                let imageURL = quadro.imageUrl == null || quadro.imageUrl.trim() === ''
+                    ? '/images/assets/sem-foto-adicionada.jpeg'
+                    : `/images/savedImages/${quadro.imageUrl}`;
 
                 quadrosHtml += `
                     <div class="${quadroColClass} mb-3">

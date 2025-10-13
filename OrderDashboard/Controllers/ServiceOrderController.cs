@@ -33,7 +33,7 @@ namespace OrderDashboard.Controllers
                 CustomerName = so.CustomerName,
                 DueDate = so.DueDate,
                 FramesCount = so.DecorPrints.Count
-            }).ToList();
+            });
 
             return View(viewModel);
         }
@@ -59,7 +59,7 @@ namespace OrderDashboard.Controllers
                     Height = dp.Height,
                     Width = dp.Width,
                     Description = dp.Description ?? "",
-                    ImageUrl = dp.ImageUrl ?? "",
+                    ImageUrl = !string.IsNullOrEmpty(dp.ImageUrl) ? $"savedImages/{dp.ImageUrl}" : "assets/sem-foto-adicionada.jpeg",
                     GlassTypeName = dp.GlassType?.Name,
                     FrameTypeName = dp.Frame?.Name
                 }).ToList()
@@ -77,8 +77,7 @@ namespace OrderDashboard.Controllers
             {
                 model.GlassTypeOptions = _optionsRepository.GetGlassTypeOptions();
                 model.FrameOptions = _optionsRepository.GetFrameOptions();
-
-                return View("Index", model);
+                return RedirectToAction(nameof(Index));
             }
 
             var serviceOrder = await _serviceOrderRepository.Add(model);
@@ -88,7 +87,7 @@ namespace OrderDashboard.Controllers
                 ModelState.AddModelError("", "Ocorreu um erro ao criar a ordem de serviço. Tente novamente.");
                 model.GlassTypeOptions = _optionsRepository.GetGlassTypeOptions();
                 model.FrameOptions = _optionsRepository.GetFrameOptions();
-                return View("Index", model);
+                return RedirectToAction(nameof(Index));
             }
 
             foreach (var quadro in model.DecorPrints)

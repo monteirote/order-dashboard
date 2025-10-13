@@ -1,8 +1,9 @@
 ﻿document.addEventListener('DOMContentLoaded', function () {
 
-    const TEMPO_TROCA_PAGINA = 15000;
+    const TEMPO_TROCA_PAGINA = 5000;
     const TEMPO_ATUALIZAR_DADOS = 60000; 
     const LIMITE_QUADROS_PEQUENO = 2;    
+    const LIMITE_QUADROS_POR_OS = 12;
 
     const quadrosContainer = document.getElementById('quadros-container');
     const relogioContainer = document.getElementById('relogio');
@@ -16,23 +17,43 @@
         relogioContainer.textContent = agora.toLocaleTimeString('pt-BR');
     }
 
-    function criarPaginas(listaDeOS) {
+    function dividirOSGrandes (listaDeOS) {
+        const listaProcessada = [];
+
+        listaDeOS.forEach(os => {
+            if (os.quadros.length <= LIMITE_QUADROS_POR_OS) {
+                listaProcessada.push(os);
+            } else {
+                for (let i = 0; i < os.quadros.length; i += LIMITE_QUADROS_POR_OS) {
+                    const pedacoDeQuadros = os.quadros.slice(i, i + LIMITE_QUADROS_POR_OS);
+                    const numeroDaParte = (i / LIMITE_QUADROS_POR_OS) + 1;
+
+                    const osParte = {
+                        ...os, 
+                        osNumber: `${os.osNumber} (Parte ${numeroDaParte})`, 
+                        quadros: pedacoDeQuadros
+                    };
+                    listaProcessada.push(osParte);
+                }
+            }
+        });
+        return listaProcessada;
+    }
+
+    function criarPaginas (listaDeOS) {
         const paginasMontadas = [];
         let i = 0;
         while (i < listaDeOS.length) {
             const osAtual = listaDeOS[i];
-
             if (osAtual.quadros.length > LIMITE_QUADROS_PEQUENO) {
                 paginasMontadas.push([osAtual]);
-                i++; 
+                i++;
                 continue;
             }
-
             const proximaOS = (i + 1 < listaDeOS.length) ? listaDeOS[i + 1] : null;
-
             if (proximaOS && proximaOS.quadros.length <= LIMITE_QUADROS_PEQUENO) {
                 paginasMontadas.push([osAtual, proximaOS]);
-                i += 2; 
+                i += 2;
             } else {
                 paginasMontadas.push([osAtual]);
                 i++;
@@ -48,13 +69,13 @@
 
         osDaPagina.forEach(os => {
             const dueDate = new Date(os.dueDate).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-
             const osWrapper = document.createElement('div');
             osWrapper.className = `col-lg-${12 / numOSNestaPagina} mb-4 d-flex flex-column`;
 
             let quadrosHtml = '<div class="row">';
             os.quadros.forEach(quadro => {
-                const quadroColClass = (numOSNestaPagina === 1) ? 'col-md-4' : 'col-md-6';
+
+                const quadroColClass = (os.quadros.length > 6) ? 'col-md-2' : 'col-md-3';
 
                 let imageURL = quadro.imageUrl == null || quadro.imageUrl.trim() === ''
                     ? '/images/assets/sem-foto-adicionada.jpeg'
@@ -77,7 +98,7 @@
 
             osWrapper.innerHTML = `
                 <div class="os-header p-3 rounded mb-3">
-                    <h3>OS: ${os.osNumber}</h3>
+                    <h3>${os.osNumber}</h3>
                     <p class="lead mb-0"><strong>Cliente:</strong> ${os.customerName} | <strong>Entrega:</strong> ${dueDate}</p>
                 </div>
                 ${quadrosHtml}
@@ -88,7 +109,6 @@
 
     function trocarPagina() {
         quadrosContainer.classList.add('fade-out');
-
         setTimeout(() => {
             paginaAtual++;
             if (paginaAtual >= paginas.length) {
@@ -104,17 +124,17 @@
             const response = await fetch('/Dashboard/ObterQuadrosEmProducao');
             if (!response.ok) throw new Error('Falha na resposta da rede');
 
-            const ordensDeServico = await response.json();
+            let ordensDeServico = await response.json();
+
+            const listaProcessada = dividirOSGrandes(ordensDeServico);
 
             if (slideshowInterval) clearInterval(slideshowInterval);
 
-            if (ordensDeServico.length > 0) {
-                paginas = criarPaginas(ordensDeServico);
-
+            if (listaProcessada.length > 0) {
+                paginas = criarPaginas(listaProcessada);
                 if (paginas.length > 0) {
                     paginaAtual = -1;
                     trocarPagina();
-
                     if (paginas.length > 1) {
                         slideshowInterval = setInterval(trocarPagina, TEMPO_TROCA_PAGINA);
                     }

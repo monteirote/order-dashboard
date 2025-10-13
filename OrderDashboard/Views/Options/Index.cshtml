@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Gerenciamento de Opções";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h3>Tipos de Vidro</h3>
+            <a asp-action="CreateGlassType" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Adicionar Novo
+            </a>
+        </div>
+        <table class="table table-bordered table-striped">
+            <tbody>
+                @foreach (var item in ViewBag.GlassTypes)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-md-6">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h3>Tipos de Moldura</h3>
+            <a asp-action="CreateFrameType" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Adicionar Novo
+            </a>
+        </div>
+        <table class="table table-bordered table-striped">
+            <tbody>
+                @foreach (var item in ViewBag.FrameTypes)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

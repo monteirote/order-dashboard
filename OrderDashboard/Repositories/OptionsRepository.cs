@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using OrderDashboard.Database;
+using OrderDashboard.Database.Entities;
 
 namespace OrderDashboard.Repositories
 {
@@ -7,6 +9,13 @@ namespace OrderDashboard.Repositories
     {
         List<SelectListItem> GetGlassTypeOptions();
         List<SelectListItem> GetFrameOptions();
+
+
+        Task<IEnumerable<GlassTypes>> GetAllGlassTypesAsync();
+        Task<IEnumerable<Frames>> GetAllFrameTypesAsync();
+
+        Task AddGlassTypeAsync (GlassTypes glassType);
+        Task AddFrameTypeAsync (Frames frameType);
     }
 
     public class OptionsRepository : IOptionsRepository
@@ -33,5 +42,26 @@ namespace OrderDashboard.Repositories
                 .ToList();
         }
 
+        public async Task<IEnumerable<GlassTypes>> GetAllGlassTypesAsync()
+        {
+            return await _context.GlassTypes.OrderBy(g => g.Name).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Frames>> GetAllFrameTypesAsync()
+        {
+            return await _context.Frames.OrderBy(f => f.Name).ToListAsync();
+        }
+
+        public async Task AddGlassTypeAsync(GlassTypes glassType)
+        {
+            _context.GlassTypes.Add(glassType);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddFrameTypeAsync(Frames frameType)
+        {
+            _context.Frames.Add(frameType);
+            await _context.SaveChangesAsync();
+        }
     }
 }

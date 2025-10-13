@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using OrderDashboard.Database.Entities.ENUMs;
 using OrderDashboard.DTOs;
 using OrderDashboard.Repositories;
 using OrderDashboard.ViewModels;
+
 
 namespace OrderDashboard.Controllers
 {
@@ -32,7 +34,8 @@ namespace OrderDashboard.Controllers
                 OSNumber = so.Number,
                 CustomerName = so.CustomerName,
                 DueDate = so.DueDate,
-                FramesCount = so.DecorPrints.Count
+                FramesCount = so.DecorPrints.Count,
+                Status = so.Status.GetDisplayName()
             });
 
             return View(viewModel);
@@ -138,6 +141,14 @@ namespace OrderDashboard.Controllers
             };
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkAsComplete(int id)
+        {
+            await _serviceOrderRepository.MarkAsCompleteAsync(id);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

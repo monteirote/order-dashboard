@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderDashboard.Database;
 using OrderDashboard.Database.Entities;
+using OrderDashboard.Database.Entities.ENUMs;
 using OrderDashboard.ViewModels;
 
 namespace OrderDashboard.Repositories
@@ -10,6 +11,7 @@ namespace OrderDashboard.Repositories
         Task<IEnumerable<ServiceOrder>> GetAllAsync();
         Task<ServiceOrder?> GetByIdWithDetailsAsync (int id);
         Task<ServiceOrder?> Add (ServiceOrderViewModel model);
+        Task MarkAsCompleteAsync (int id);
     }
 
     public class ServiceOrderRepository : IServiceOrderRepository
@@ -52,6 +54,16 @@ namespace OrderDashboard.Repositories
             await _context.SaveChangesAsync();
 
             return entity;
+        }
+
+        public async Task MarkAsCompleteAsync (int id)
+        {
+            var serviceOrder = await _context.ServiceOrders.FindAsync(id);
+            if (serviceOrder != null)
+            {
+                serviceOrder.Status = ServiceOrderStatus.Completed;
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

@@ -7,5 +7,6 @@
         public string? CustomerName { get; set; }
         public DateTime DueDate { get; set; }
         public int FramesCount { get; set; }
+        public string Status { get; set; } = null!;
     }
 }

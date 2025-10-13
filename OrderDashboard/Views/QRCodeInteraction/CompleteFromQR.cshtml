@@ -1,0 +1,26 @@
+﻿@model OrderDashboard.ViewModels.QrCodeInteraction.CompleteFromQRViewModel;
+@{
+    Layout = "_LayoutSimple"; // Use um layout simples sem menu, etc.
+    ViewData["Title"] = "Confirmar Conclusão";
+}
+
+<div class="container text-center mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h3>Confirmar Conclusão</h3>
+        </div>
+        <div class="card-body">
+            <h4 class="card-title">OS: @Model.OSNumber</h4>
+            <p class="card-text">Cliente: @Model.CustomerName</p>
+            <p class="card-text">Data de Entrega: @Model.DueDate.ToString()</p>
+            <p>Você tem certeza que deseja marcar esta Ordem de Serviço como concluída?</p>
+
+            <form asp-action="CompleteFromQR" asp-route-id="@Model.Id" method="post">
+                <button type="submit" class="btn btn-success btn-lg btn-block">
+                    <i class="bi bi-check-circle"></i> Sim, Marcar como Concluída
+                </button>
+            </form>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary btn-sm btn-block mt-2">Cancelar</a>
+        </div>
+    </div>
+</div>

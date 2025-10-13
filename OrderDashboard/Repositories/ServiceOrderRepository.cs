@@ -10,6 +10,7 @@ namespace OrderDashboard.Repositories
     {
         Task<IEnumerable<ServiceOrder>> GetAllAsync();
         Task<ServiceOrder?> GetByIdWithDetailsAsync (int id);
+        Task<ServiceOrder?> GetByOsNumberWithDetailsAsync (string osNumber);
         Task<ServiceOrder?> Add (ServiceOrderViewModel model);
         Task MarkAsCompleteAsync (int id);
     }
@@ -37,6 +38,14 @@ namespace OrderDashboard.Repositories
                                     .Include(so => so.DecorPrints).ThenInclude(dp => dp.GlassType)
                                     .Include(so => so.DecorPrints).ThenInclude(dp => dp.Frame)
                                     .FirstOrDefaultAsync(so => so.Id == id);
+        }
+
+        public async Task<ServiceOrder?> GetByOsNumberWithDetailsAsync (string osNumber)
+        {
+            return await _context.ServiceOrders
+                                    .Include(so => so.DecorPrints).ThenInclude(dp => dp.GlassType)
+                                    .Include(so => so.DecorPrints).ThenInclude(dp => dp.Frame)
+                                    .FirstOrDefaultAsync(so => so.Number == osNumber);
         }
 
         public async Task<ServiceOrder?> Add (ServiceOrderViewModel model)

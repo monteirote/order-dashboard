@@ -74,39 +74,62 @@
 
             let quadrosHtml = '<div class="row">';
             os.quadros.forEach(quadro => {
-
                 const quadroColClass = (os.quadros.length > 6) ? 'col-md-2' : 'col-md-3';
-
                 let imageURL = quadro.imageUrl == null || quadro.imageUrl.trim() === ''
                     ? '/images/assets/sem-foto-adicionada.jpeg'
                     : `/images/savedImages/${quadro.imageUrl}`;
 
                 quadrosHtml += `
-                    <div class="${quadroColClass} mb-3">
-                        <div class="card h-100 bg-dark text-white">
-                            <img src="${imageURL}" class="card-img-top" style="height: 150px; object-fit: cover;">
-                            <div class="card-body">
-                                <h5 class="card-title">${quadro.width}cm x ${quadro.height}cm</h5>
-                                <p class="card-text">${quadro.description || ''}</p>
-                                <small>${quadro.frameTypeName || 'N/A'} | ${quadro.glassTypeName || 'N/A'}</small>
-                            </div>
+                <div class="${quadroColClass} mb-3">
+                    <div class="card h-100 bg-dark text-white">
+                        <img src="${imageURL}" class="card-img-top" style="height: 150px; object-fit: cover;">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">${quadro.width}cm x ${quadro.height}cm</h5>
+                            <p class="card-text flex-grow-1">${quadro.description || ''}</p>
+                            <small>${quadro.frameTypeName || 'N/A'} | ${quadro.glassTypeName || 'N/A'}</small>
                         </div>
                     </div>
-                `;
+                </div>
+            `;
             });
             quadrosHtml += '</div>';
 
+            const qrCodeContainerId = `qrcode-os-${os.osNumber}`;
+            
             osWrapper.innerHTML = `
-                <div class="os-header p-3 rounded mb-3">
-                    <h3>${os.osNumber}</h3>
-                    <p class="lead mb-0"><strong>Cliente:</strong> ${os.customerName} | <strong>Entrega:</strong> ${dueDate}</p>
+                <div class="os-header p-3 rounded mb-3 d-flex justify-content-between align-items-center">
+                
+                    <div>
+                        <h3>${os.osNumber}</h3>
+                        <p class="lead mb-0"><strong>Cliente:</strong> ${os.customerName} | <strong>Entrega:</strong> ${dueDate}</p>
+                    </div>
+
+                    <div class="text-center ml-3">
+                        <div id="${qrCodeContainerId}"></div>
+                        <h6 class="mt-1" style="font-size: 0.8rem;">Concluir OS</h6>
+                    </div>
+
                 </div>
+
                 ${quadrosHtml}
             `;
+
             quadrosContainer.appendChild(osWrapper);
+
+            // A lógica de geração do QR Code continua a mesma, pois ela encontra o ID
+            const urlParaQrCode = `${window.location.origin}/QRCodeInteraction/CompleteFromQR/${os.osNumber.split(' ')[0]}`;
+            const qrCodeContainer = document.getElementById(qrCodeContainerId);
+
+            new QRCode(qrCodeContainer, {
+                text: urlParaQrCode,
+                width: 120, // Diminuí um pouco para caber melhor no header
+                height: 120,
+                colorDark: "#ffffff",
+                colorLight: "#343a40",
+                correctLevel: QRCode.CorrectLevel.H
+            });
         });
     }
-
     function trocarPagina() {
         quadrosContainer.classList.add('fade-out');
         setTimeout(() => {

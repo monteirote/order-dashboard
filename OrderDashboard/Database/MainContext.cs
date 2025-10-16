@@ -9,6 +9,7 @@ namespace OrderDashboard.Database
         public virtual DbSet<GlassTypes> GlassTypes { get; set; }
         public virtual DbSet<Frames> Frames { get; set; }
         public virtual DbSet<ServiceOrder> ServiceOrders { get; set; }
+        public virtual DbSet<Users> Users { get; set; }
 
         public MainContext (DbContextOptions<MainContext> options) : base (options) { }
     }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using OrderDashboard.Database.Entities.ENUMs;
 using OrderDashboard.DTOs;
@@ -8,6 +9,7 @@ using OrderDashboard.ViewModels;
 
 namespace OrderDashboard.Controllers
 {
+    [Authorize]
     public class ServiceOrderController : Controller
     {
         private readonly IServiceOrderRepository _serviceOrderRepository;

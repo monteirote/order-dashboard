@@ -58,5 +58,21 @@ namespace OrderDashboard.Controllers
             }
             return View(frameType);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteGlassType(int id)
+        {
+            await _optionsRepository.DeleteGlassTypeAsync(id);
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteFrameType(int id)
+        {
+            await _optionsRepository.DeleteFrameTypeAsync(id);
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

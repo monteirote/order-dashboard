@@ -13,6 +13,7 @@ namespace OrderDashboard.Repositories
         Task<ServiceOrder?> GetByOsNumberWithDetailsAsync (string osNumber);
         Task<ServiceOrder?> Add (ServiceOrderViewModel model);
         Task MarkAsCompleteAsync (int id);
+        Task DeleteAsync (int id);
     }
 
     public class ServiceOrderRepository : IServiceOrderRepository
@@ -71,6 +72,24 @@ namespace OrderDashboard.Repositories
             if (serviceOrder != null)
             {
                 serviceOrder.Status = ServiceOrderStatus.Completed;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task DeleteAsync (int id)
+        {
+            var serviceOrder = await _context.ServiceOrders
+                .Include(so => so.DecorPrints)
+                .FirstOrDefaultAsync(so => so.Id == id);
+
+            if (serviceOrder != null)
+            {
+                if (serviceOrder.DecorPrints != null && serviceOrder.DecorPrints.Any())
+                {
+                    _context.DecorPrints.RemoveRange(serviceOrder.DecorPrints);
+                }
+
+                _context.ServiceOrders.Remove(serviceOrder);
                 await _context.SaveChangesAsync();
             }
         }

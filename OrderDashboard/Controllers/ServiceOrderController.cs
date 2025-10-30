@@ -134,7 +134,7 @@ namespace OrderDashboard.Controllers
         }
 
         [HttpGet]
-        public IActionResult ServiceOrderForm()
+        public IActionResult ServiceOrderForm ()
         {
             var viewModel = new ServiceOrderViewModel
             {
@@ -150,6 +150,14 @@ namespace OrderDashboard.Controllers
         public async Task<IActionResult> MarkAsComplete(int id)
         {
             await _serviceOrderRepository.MarkAsCompleteAsync(id);
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete (int id)
+        {
+            await _serviceOrderRepository.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }

@@ -13,18 +13,17 @@ namespace OrderDashboard.Controllers
     using OrderDashboard.Database.Entities;
     using OrderDashboard.Database.Entities.ENUMs;
     using OrderDashboard.Repositories;
-    using OrderDashboard.Services; // Supondo um serviço de senha
-                                   // ... outros usings
+    using OrderDashboard.Services;
 
     public class AccountController : Controller
     {
         private readonly IUserRepository _userRepository;
-        private readonly IPasswordService _passwordService; // Serviço para hashear/verificar senhas
+        private readonly IPasswordService _passwordService;
         private readonly IConfiguration _configuration;
 
         public AccountController(
             IUserRepository userRepository,
-            IPasswordService passwordService, // Injete o serviço de senha
+            IPasswordService passwordService,
             IConfiguration configuration)
         {
             _userRepository = userRepository;
@@ -47,17 +46,13 @@ namespace OrderDashboard.Controllers
                 return BadRequest(ModelState);
             }
 
-            // 1. Encontra o usuário pelo e-mail (ou nome de usuário)
-            var user = await _userRepository.GetUserByEmailAsync(model.Username); // Assumindo que o login é por e-mail
+            var user = await _userRepository.GetUserByEmailAsync(model.Username); 
 
             if (user == null || !user.IsActive)
             {
-                // Usuário não encontrado ou inativo. Retorna a mesma mensagem para não dar dicas a atacantes.
                 return Unauthorized(new { message = "Usuário ou senha inválidos." });
             }
 
-            // 2. Verifica a senha
-            // Esta é a parte de segurança mais importante!
             bool isPasswordValid = _passwordService.VerifyPasswordHash(model.Password, user.PasswordHash, user.PasswordSalt);
 
             if (!isPasswordValid)
@@ -65,7 +60,6 @@ namespace OrderDashboard.Controllers
                 return Unauthorized(new { message = "Usuário ou senha inválidos." });
             }
 
-            // 3. Se tudo estiver correto, gera o token JWT
             var token = GenerateJwtToken(user);
             return Ok(new { token = token });
         }
@@ -117,7 +111,6 @@ namespace OrderDashboard.Controllers
             return View(model);
         }
 
-        // POST: /Account/Register
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
@@ -152,7 +145,15 @@ namespace OrderDashboard.Controllers
             return RedirectToAction(nameof(Login));
         }
 
-        private string GenerateJwtToken(Users user)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction(nameof(Login));
+        }
+
+        private string GenerateJwtToken (Users user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? ""));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

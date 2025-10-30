@@ -21,6 +21,8 @@ OrderDashboard/wwwroot/images/savedImages/
 *.userosscache
 *.sln.docstates
 
+.env
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

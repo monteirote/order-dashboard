@@ -64,7 +64,7 @@ namespace OrderDashboard.Controllers
                     Height = dp.Height,
                     Width = dp.Width,
                     Description = dp.Description ?? "",
-                    ImageUrl = !string.IsNullOrEmpty(dp.ImageUrl) ? $"savedImages/{dp.ImageUrl}" : "assets/sem-foto-adicionada.jpeg",
+                    ImageUrl = !string.IsNullOrEmpty(dp.ImageUrl) ? $"uploads/{dp.ImageUrl}" : "assets/sem-foto-adicionada.jpeg",
                     GlassTypeName = dp.GlassType?.Name,
                     FrameTypeName = dp.Frame?.Name
                 }).ToList()
@@ -101,7 +101,7 @@ namespace OrderDashboard.Controllers
 
                 if (quadro.ImageFile != null)
                 {
-                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "uploads");
 
                     if (!Directory.Exists(uploadsFolder))
                     {
@@ -157,7 +157,7 @@ namespace OrderDashboard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete (int id)
         {
-            await _serviceOrderRepository.DeleteAsync(id);
+            await _serviceOrderRepository.DeleteAsync(id, _webHostEnvironment.WebRootPath);
             return RedirectToAction(nameof(Index));
         }
     }

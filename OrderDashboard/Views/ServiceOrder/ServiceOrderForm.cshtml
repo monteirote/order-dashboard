@@ -111,7 +111,7 @@
                         <input name="DecorPrints[__INDEX__].ImageFile" type="file" class="form-control image-upload-input" accept="image/*" />
                     </div>
                     <div class="mt-2 text-center">
-                        <img src="https://via.placeholder.com/150" class="img-thumbnail image-preview" style="max-width: 150px; max-height: 150px;" alt="Preview da imagem" />
+                        <img src="~/images/assets/sem-foto-adicionada.jpeg" class="img-thumbnail image-preview" style="max-width: 150px; max-height: 150px;" alt="Preview da imagem" />
                     </div>
                 </div>
             </div>
@@ -135,7 +135,6 @@
                 });
             }
 
-            // Adicionar Quadro
             $("#addQuadroBtn").click(function () {
                 var index = $("#quadrosContainer .quadro-item").length;
                 var template = $("#quadroTemplate").html().replace(/__INDEX__/g, index);
@@ -145,7 +144,6 @@
 
                 $("#quadrosContainer").append(newQuadro);
 
-                // Inicializa o select2 para o novo quadro adicionado
                 initializeSelect2(newQuadro);
             });
 
@@ -171,7 +169,7 @@
                     }
                     reader.readAsDataURL(this.files[0]);
                 } else {
-                     preview.attr('src', 'https://via.placeholder.com/150');
+                     preview.attr('src', '~/images/assets/sem-foto-adicionada.jpeg');
                 }
             });
         });

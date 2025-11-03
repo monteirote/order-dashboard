@@ -77,7 +77,7 @@
                 const quadroColClass = (os.quadros.length > 6) ? 'col-md-2' : 'col-md-3';
                 let imageURL = quadro.imageUrl == null || quadro.imageUrl.trim() === ''
                     ? '/images/assets/sem-foto-adicionada.jpeg'
-                    : `/images/savedImages/${quadro.imageUrl}`;
+                    : `/images/uploads/${quadro.imageUrl}`;
 
                 quadrosHtml += `
                 <div class="${quadroColClass} mb-3">

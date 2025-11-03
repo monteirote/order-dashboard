@@ -12,6 +12,7 @@ namespace OrderDashboard.Repositories
     {
         void AddDecorPrint (DecorPrintDTO viewModel);
         List<DashboardOSViewModel> GetDashboardData ();
+        Task DeleteDecorPrintAsync(int id, string webRootPath);
     }
 
     public class DecorPrintsRepository : IDecorPrintsRepository
@@ -67,6 +68,40 @@ namespace OrderDashboard.Repositories
                 .ToList();
 
             return groupedServiceOrders;
+        }
+
+        public async Task DeleteDecorPrintAsync(int id, string webRootPath)
+        {
+            var decorPrint = await _context.DecorPrints.FindAsync(id);
+
+            if (decorPrint != null)
+            {
+                // Deletar a imagem física se existir
+                if (!string.IsNullOrEmpty(decorPrint.ImageUrl))
+                {
+                    DeleteImageFile(decorPrint.ImageUrl, webRootPath);
+                }
+
+                _context.DecorPrints.Remove(decorPrint);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        private void DeleteImageFile(string fileName, string webRootPath)
+        {
+            try
+            {
+                string filePath = Path.Combine(webRootPath, "images", "uploads", fileName);
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log o erro, mas não falha a operação de exclusão
+                Console.WriteLine($"Erro ao deletar imagem {fileName}: {ex.Message}");
+            }
         }
     }
 }

@@ -16,6 +16,9 @@ namespace OrderDashboard.Repositories
 
         Task AddGlassTypeAsync (GlassTypes glassType);
         Task AddFrameTypeAsync (Frames frameType);
+        
+        Task DeleteGlassTypeAsync(int id);
+        Task DeleteFrameTypeAsync(int id);
     }
 
     public class OptionsRepository : IOptionsRepository
@@ -62,6 +65,26 @@ namespace OrderDashboard.Repositories
         {
             _context.Frames.Add(frameType);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteGlassTypeAsync(int id)
+        {
+            var glassType = await _context.GlassTypes.FindAsync(id);
+            if (glassType != null)
+            {
+                _context.GlassTypes.Remove(glassType);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task DeleteFrameTypeAsync(int id)
+        {
+            var frameType = await _context.Frames.FindAsync(id);
+            if (frameType != null)
+            {
+                _context.Frames.Remove(frameType);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

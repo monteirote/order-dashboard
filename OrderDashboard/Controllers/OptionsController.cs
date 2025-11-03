@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OrderDashboard.Database.Entities;
 using OrderDashboard.Repositories;
 
 namespace OrderDashboard.Controllers
 {
+    [Authorize]
     public class OptionsController : Controller
     {
         private readonly IOptionsRepository _optionsRepository;
@@ -13,6 +15,7 @@ namespace OrderDashboard.Controllers
             _optionsRepository = optionsRepository;
         }
 
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             ViewBag.GlassTypes = await _optionsRepository.GetAllGlassTypesAsync();
@@ -54,6 +57,22 @@ namespace OrderDashboard.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(frameType);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteGlassType(int id)
+        {
+            await _optionsRepository.DeleteGlassTypeAsync(id);
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteFrameType(int id)
+        {
+            await _optionsRepository.DeleteFrameTypeAsync(id);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

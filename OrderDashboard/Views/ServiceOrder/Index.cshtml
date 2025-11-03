@@ -44,12 +44,18 @@
 
                     @if (item.Status == "Em Andamento")
                     {
-                        <form asp-action="MarkAsComplete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Tem certeza que deseja marcar esta OS como completa?');">
+                        <form asp-action="MarkAsComplete" asp-route-id="@item.Id" method="post" class="mr-2" onsubmit="return confirm('Tem certeza que deseja marcar esta OS como completa?');">
                             <button type="submit" class="btn btn-success btn-sm">
                                 <i class="bi bi-check-circle"></i> Completar
                             </button>
                         </form>
                     }
+
+                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Tem certeza que deseja excluir esta OS? Esta ação não poderá ser desfeita.');">
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            <i class="bi bi-trash"></i> Excluir
+                        </button>
+                    </form>
                 </td>
             </tr>
         }

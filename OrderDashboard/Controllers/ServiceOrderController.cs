@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using OrderDashboard.Database.Entities.ENUMs;
 using OrderDashboard.DTOs;
@@ -8,6 +9,7 @@ using OrderDashboard.ViewModels;
 
 namespace OrderDashboard.Controllers
 {
+    [Authorize]
     public class ServiceOrderController : Controller
     {
         private readonly IServiceOrderRepository _serviceOrderRepository;
@@ -62,7 +64,7 @@ namespace OrderDashboard.Controllers
                     Height = dp.Height,
                     Width = dp.Width,
                     Description = dp.Description ?? "",
-                    ImageUrl = !string.IsNullOrEmpty(dp.ImageUrl) ? $"savedImages/{dp.ImageUrl}" : "assets/sem-foto-adicionada.jpeg",
+                    ImageUrl = !string.IsNullOrEmpty(dp.ImageUrl) ? $"uploads/{dp.ImageUrl}" : "assets/sem-foto-adicionada.jpeg",
                     GlassTypeName = dp.GlassType?.Name,
                     FrameTypeName = dp.Frame?.Name
                 }).ToList()
@@ -99,7 +101,7 @@ namespace OrderDashboard.Controllers
 
                 if (quadro.ImageFile != null)
                 {
-                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "uploads");
 
                     if (!Directory.Exists(uploadsFolder))
                     {
@@ -132,7 +134,7 @@ namespace OrderDashboard.Controllers
         }
 
         [HttpGet]
-        public IActionResult ServiceOrderForm()
+        public IActionResult ServiceOrderForm ()
         {
             var viewModel = new ServiceOrderViewModel
             {
@@ -148,6 +150,14 @@ namespace OrderDashboard.Controllers
         public async Task<IActionResult> MarkAsComplete(int id)
         {
             await _serviceOrderRepository.MarkAsCompleteAsync(id);
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete (int id)
+        {
+            await _serviceOrderRepository.DeleteAsync(id, _webHostEnvironment.WebRootPath);
             return RedirectToAction(nameof(Index));
         }
     }

@@ -13,6 +13,7 @@ namespace OrderDashboard.Repositories
         Task<ServiceOrder?> GetByOsNumberWithDetailsAsync (string osNumber);
         Task<ServiceOrder?> Add (ServiceOrderViewModel model);
         Task MarkAsCompleteAsync (int id);
+        Task DeleteAsync (int id, string webRootPath);
     }
 
     public class ServiceOrderRepository : IServiceOrderRepository
@@ -72,6 +73,49 @@ namespace OrderDashboard.Repositories
             {
                 serviceOrder.Status = ServiceOrderStatus.Completed;
                 await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task DeleteAsync (int id, string webRootPath)
+        {
+            var serviceOrder = await _context.ServiceOrders
+                .Include(so => so.DecorPrints)
+                .FirstOrDefaultAsync(so => so.Id == id);
+
+            if (serviceOrder != null)
+            {
+                // Deletar as imagens físicas antes de remover do banco
+                if (serviceOrder.DecorPrints != null && serviceOrder.DecorPrints.Any())
+                {
+                    foreach (var decorPrint in serviceOrder.DecorPrints)
+                    {
+                        if (!string.IsNullOrEmpty(decorPrint.ImageUrl))
+                        {
+                            DeleteImageFile(decorPrint.ImageUrl, webRootPath);
+                        }
+                    }
+
+                    _context.DecorPrints.RemoveRange(serviceOrder.DecorPrints);
+                }
+
+                _context.ServiceOrders.Remove(serviceOrder);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        private void DeleteImageFile (string fileName, string webRootPath)
+        {
+            try
+            {
+                string filePath = Path.Combine(webRootPath, "images", "uploads", fileName);
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao deletar imagem {fileName}: {ex.Message}");
             }
         }
     }
